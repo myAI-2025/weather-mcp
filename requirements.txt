@@ -1,0 +1,4 @@
+# Development / CI dependencies only.
+# server.py itself has no runtime dependencies (standard library only).
+pytest
+flake8
