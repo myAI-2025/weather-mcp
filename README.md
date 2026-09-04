@@ -73,3 +73,7 @@ responses to stdout:
 
 Upstream calls: Open-Meteo geocoding (`geocoding-api.open-meteo.com`) then the
 forecast endpoint (`api.open-meteo.com`) with `current=temperature_2m,wind_speed_10m,weather_code`.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
