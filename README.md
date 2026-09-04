@@ -16,14 +16,56 @@ No third-party dependencies — standard library only. Requires Python 3.7+.
 | `get_weather` | `location` (string, required) — a place name like `"Seattle"` or `"Paris, France"` | Current conditions, temperature (°F), and wind (mph) as a text block. Unknown place names come back as a result with `isError: true`. |
 | `get_hourly_forecast` | `location` (string, required); `hours` (integer, optional, 1–48, default 12) | Hour-by-hour temperature (°F), precipitation probability, and conditions, one line per hour. Timestamps are local to the location. Out-of-range `hours` is clamped. |
 
-## Try it without a client
+## Usage
+
+Once the server is wired into a client (see below), just ask in natural
+language — the model picks the tool and fills in the arguments:
+
+> **You:** What's the weather in Seattle right now?
+>
+> **Claude:** *(calls `get_weather` with `location: "Seattle"`)*
+> Current weather in Seattle, United States: overcast, 54.2 °F, wind 1.1 mph.
+
+> **You:** Will it rain in Tokyo over the next 6 hours?
+>
+> **Claude:** *(calls `get_hourly_forecast` with `location: "Tokyo"`, `hours: 6`)*
+> Yes — drizzle every hour, precipitation probability climbing from 76 % to 89 %.
+
+### Try it without a client
+
+Drive the server directly over stdio with a hand-written JSON-RPC exchange:
 
 ```bash
 printf '%s\n' \
   '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","clientInfo":{"name":"cli"}}}' \
   '{"jsonrpc":"2.0","method":"notifications/initialized"}' \
   '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"get_weather","arguments":{"location":"Seattle"}}}' \
+  '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"get_hourly_forecast","arguments":{"location":"Tokyo","hours":6}}}' \
   | python3 server.py
+```
+
+The `tools/call` responses look like:
+
+```json
+{"jsonrpc": "2.0", "id": 2, "result": {"content": [{"type": "text",
+  "text": "Current weather in Seattle, United States:\n  Conditions:  overcast\n  Temperature: 54.2°F\n  Wind:        1.1 mph"}]}}
+```
+
+```text
+Hourly forecast for Tokyo, Japan (next 6 hours):
+  2026-09-04 18:00  73.0°F  precip  76%  dense drizzle
+  2026-09-04 19:00  72.5°F  precip  76%  dense drizzle
+  2026-09-04 20:00  72.2°F  precip  78%  dense drizzle
+  2026-09-04 21:00  71.8°F  precip  80%  slight rain
+  2026-09-04 22:00  71.7°F  precip  84%  dense drizzle
+  2026-09-04 23:00  71.3°F  precip  89%  moderate drizzle
+```
+
+An unknown place name comes back as a normal result with `"isError": true`:
+
+```json
+{"jsonrpc": "2.0", "id": 4, "result": {"content": [{"type": "text",
+  "text": "Could not find any location named 'Zzzxqq'."}], "isError": true}}
 ```
 
 ## Run the tests
