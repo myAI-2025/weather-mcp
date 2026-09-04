@@ -1,8 +1,11 @@
 # weather-mcp
 
+[![Python application](https://github.com/myAI-2025/weather-mcp/actions/workflows/python-app.yml/badge.svg)](https://github.com/myAI-2025/weather-mcp/actions/workflows/python-app.yml)
+
 A minimal [Model Context Protocol](https://modelcontextprotocol.io) server in a
-single file. It speaks JSON-RPC 2.0 over stdio and exposes one tool,
-`get_weather`, backed by the free [Open-Meteo](https://open-meteo.com) API.
+single file. It speaks JSON-RPC 2.0 over stdio and exposes two tools,
+`get_weather` and `get_hourly_forecast`, backed by the free
+[Open-Meteo](https://open-meteo.com) API.
 
 No third-party dependencies — standard library only. Requires Python 3.7+.
 
