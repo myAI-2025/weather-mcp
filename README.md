@@ -41,7 +41,7 @@ printf '%s\n' \
   '{"jsonrpc":"2.0","method":"notifications/initialized"}' \
   '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"get_weather","arguments":{"location":"Seattle"}}}' \
   '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"get_hourly_forecast","arguments":{"location":"Tokyo","hours":6}}}' \
-  | python3 server.py
+  | weather-mcp          # or: python3 weather_mcp/server.py
 ```
 
 The `tools/call` responses look like:
@@ -68,45 +68,102 @@ An unknown place name comes back as a normal result with `"isError": true`:
   "text": "Could not find any location named 'Zzzxqq'."}], "isError": true}}
 ```
 
-## Run the tests
+## Install
+
+Pick whichever fits your setup. All of them give you a `weather-mcp`
+command (or an equivalent) that clients can launch.
+
+**With [uv](https://docs.astral.sh/uv/) — no install step at all:**
 
 ```bash
-python3 test_server.py
+uvx --from git+https://github.com/myAI-2025/weather-mcp weather-mcp
 ```
 
-The suite monkeypatches the two network functions, so it runs offline.
+**With pipx or pip:**
 
-## Wire it into a client
+```bash
+pipx install git+https://github.com/myAI-2025/weather-mcp
+# or
+pip install git+https://github.com/myAI-2025/weather-mcp
+```
+
+**From a clone (no install):**
+
+```bash
+git clone https://github.com/myAI-2025/weather-mcp
+python3 weather-mcp/weather_mcp/server.py     # runs the server directly
+```
+
+## Configure a client
+
+### Claude Code
+
+```bash
+claude mcp add --scope user weather -- weather-mcp
+```
+
+If you cloned instead of installing, point at the file:
+
+```bash
+claude mcp add --scope user weather -- python3 /path/to/weather-mcp/weather_mcp/server.py
+```
+
+Restart Claude Code (or reconnect via `/mcp`). Both tools then appear as
+`mcp__weather__get_weather` and `mcp__weather__get_hourly_forecast`.
 
 ### Claude Desktop
 
-Edit `~/Library/Application Support/Claude/claude_desktop_config.json`
-(macOS) and add:
+Edit `claude_desktop_config.json`
+(macOS: `~/Library/Application Support/Claude/`, Windows: `%APPDATA%\Claude\`)
+and add:
 
 ```json
 {
   "mcpServers": {
     "weather": {
-      "command": "python3",
-      "args": ["/Users/mona/projects/weather-mcp/server.py"]
+      "command": "weather-mcp"
     }
   }
 }
 ```
 
-Restart Claude Desktop. The `get_weather` tool appears under the connectors
-(plug) menu.
+Using `uvx` instead, so nothing needs installing first:
 
-### Claude Code
+```json
+{
+  "mcpServers": {
+    "weather": {
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/myAI-2025/weather-mcp", "weather-mcp"]
+    }
+  }
+}
+```
+
+Restart Claude Desktop. The tools appear under the connectors (plug) menu.
+
+### Any other MCP client
+
+It's a standard stdio server: launch `weather-mcp` (or
+`python3 -m weather_mcp`) as a subprocess and speak JSON-RPC 2.0 over its
+stdin/stdout. See **How it works** below.
+
+## Development
 
 ```bash
-claude mcp add weather -- python3 /Users/mona/projects/weather-mcp/server.py
+git clone https://github.com/myAI-2025/weather-mcp
+cd weather-mcp
+pip install -e ".[dev]"
+python3 test_server.py     # one line per check
+pytest                     # same checks, pytest-style
 ```
+
+The suite monkeypatches the network functions, so it runs offline.
 
 ## How it works
 
-`server.py` reads newline-delimited JSON-RPC messages from stdin and writes
-responses to stdout:
+`weather_mcp/server.py` reads newline-delimited JSON-RPC messages from stdin
+and writes responses to stdout:
 
 | Method | Behavior |
 | --- | --- |

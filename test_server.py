@@ -13,7 +13,7 @@ Runs two ways:
 
 import sys
 
-import server  # our MCP server module
+from weather_mcp import server  # our MCP server module
 
 
 def fake_geocode(place_name):
