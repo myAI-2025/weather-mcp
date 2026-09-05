@@ -1,6 +1,9 @@
 # weather-mcp
 
 [![Python application](https://github.com/myAI-2025/weather-mcp/actions/workflows/python-app.yml/badge.svg)](https://github.com/myAI-2025/weather-mcp/actions/workflows/python-app.yml)
+[![PyPI](https://img.shields.io/pypi/v/openmeteo-mcp)](https://pypi.org/project/openmeteo-mcp/)
+
+<!-- mcp-name: io.github.myai-2025/openmeteo-mcp -->
 
 A minimal [Model Context Protocol](https://modelcontextprotocol.io) server in a
 single file. It speaks JSON-RPC 2.0 over stdio and exposes two tools,
@@ -41,7 +44,7 @@ printf '%s\n' \
   '{"jsonrpc":"2.0","method":"notifications/initialized"}' \
   '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"get_weather","arguments":{"location":"Seattle"}}}' \
   '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"get_hourly_forecast","arguments":{"location":"Tokyo","hours":6}}}' \
-  | weather-mcp          # or: python3 weather_mcp/server.py
+  | openmeteo-mcp        # or: python3 weather_mcp/server.py
 ```
 
 The `tools/call` responses look like:
@@ -70,13 +73,21 @@ An unknown place name comes back as a normal result with `"isError": true`:
 
 ## Install
 
-Pick whichever fits your setup. All of them give you a `weather-mcp`
+Pick whichever fits your setup. All of them give you an `openmeteo-mcp`
 command (or an equivalent) that clients can launch.
+
+**From PyPI:**
+
+```bash
+pipx install openmeteo-mcp      # or: pip install openmeteo-mcp
+```
 
 **With [uv](https://docs.astral.sh/uv/) — no install step at all:**
 
 ```bash
-uvx --from git+https://github.com/myAI-2025/weather-mcp weather-mcp
+uvx openmeteo-mcp
+# or straight from GitHub:
+uvx --from git+https://github.com/myAI-2025/weather-mcp openmeteo-mcp
 ```
 
 **With pipx or pip:**
@@ -99,7 +110,7 @@ python3 weather-mcp/weather_mcp/server.py     # runs the server directly
 ### Claude Code
 
 ```bash
-claude mcp add --scope user weather -- weather-mcp
+claude mcp add --scope user weather -- openmeteo-mcp
 ```
 
 If you cloned instead of installing, point at the file:
@@ -121,7 +132,7 @@ and add:
 {
   "mcpServers": {
     "weather": {
-      "command": "weather-mcp"
+      "command": "openmeteo-mcp"
     }
   }
 }
@@ -134,7 +145,7 @@ Using `uvx` instead, so nothing needs installing first:
   "mcpServers": {
     "weather": {
       "command": "uvx",
-      "args": ["--from", "git+https://github.com/myAI-2025/weather-mcp", "weather-mcp"]
+      "args": ["openmeteo-mcp"]
     }
   }
 }
@@ -144,7 +155,7 @@ Restart Claude Desktop. The tools appear under the connectors (plug) menu.
 
 ### Any other MCP client
 
-It's a standard stdio server: launch `weather-mcp` (or
+It's a standard stdio server: launch `openmeteo-mcp` (or
 `python3 -m weather_mcp`) as a subprocess and speak JSON-RPC 2.0 over its
 stdin/stdout. See **How it works** below.
 

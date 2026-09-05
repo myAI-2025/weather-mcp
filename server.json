@@ -1,0 +1,22 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.myai-2025/openmeteo-mcp",
+  "title": "Open-Meteo Weather",
+  "description": "Current weather and hourly forecasts for any place name, via the free Open-Meteo API. No API key.",
+  "repository": {
+    "url": "https://github.com/myAI-2025/weather-mcp",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "openmeteo-mcp",
+      "version": "0.1.0",
+      "runtimeHint": "uvx",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
