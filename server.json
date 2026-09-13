@@ -7,12 +7,12 @@
     "url": "https://github.com/myAI-2025/weather-mcp",
     "source": "github"
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "packages": [
     {
       "registryType": "pypi",
-      "identifier": "openmeteo-mcp",
-      "version": "0.1.0",
+      "identifier": "myai-weather-mcp",
+      "version": "0.1.1",
       "runtimeHint": "uvx",
       "transport": {
         "type": "stdio"

@@ -27,7 +27,7 @@ import urllib.request
 
 PROTOCOL_VERSION = "2024-11-05"
 SERVER_NAME = "weather-mcp"
-SERVER_VERSION = "0.1.0"
+SERVER_VERSION = "0.1.1"
 
 GEOCODE_URL = "https://geocoding-api.open-meteo.com/v1/search"
 FORECAST_URL = "https://api.open-meteo.com/v1/forecast"

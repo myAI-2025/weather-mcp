@@ -3,8 +3,8 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "openmeteo-mcp"
-version = "0.1.0"
+name = "myai-weather-mcp"
+version = "0.1.1"
 description = "Minimal dependency-free Model Context Protocol server exposing get_weather and get_hourly_forecast tools, backed by the free Open-Meteo API"
 readme = "README.md"
 license = { text = "MIT" }
@@ -31,6 +31,7 @@ Repository = "https://github.com/myAI-2025/weather-mcp"
 Issues = "https://github.com/myAI-2025/weather-mcp/issues"
 
 [project.scripts]
+myai-weather-mcp = "weather_mcp.server:main"
 openmeteo-mcp = "weather_mcp.server:main"
 
 [tool.setuptools]

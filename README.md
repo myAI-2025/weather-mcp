@@ -1,7 +1,7 @@
 # weather-mcp
 
 [![Python application](https://github.com/myAI-2025/weather-mcp/actions/workflows/python-app.yml/badge.svg)](https://github.com/myAI-2025/weather-mcp/actions/workflows/python-app.yml)
-[![PyPI](https://img.shields.io/pypi/v/openmeteo-mcp)](https://pypi.org/project/openmeteo-mcp/)
+[![PyPI](https://img.shields.io/pypi/v/myai-weather-mcp)](https://pypi.org/project/myai-weather-mcp/)
 
 <!-- mcp-name: io.github.myai-2025/openmeteo-mcp -->
 
@@ -76,16 +76,19 @@ An unknown place name comes back as a normal result with `"isError": true`:
 Pick whichever fits your setup. All of them give you an `openmeteo-mcp`
 command (or an equivalent) that clients can launch.
 
-**From PyPI:**
+The distribution is named `myai-weather-mcp`; both `myai-weather-mcp` and
+`openmeteo-mcp` launch the server.
+
+**From PyPI (after the first successful release):**
 
 ```bash
-pipx install openmeteo-mcp      # or: pip install openmeteo-mcp
+pipx install myai-weather-mcp      # or: pip install myai-weather-mcp
 ```
 
 **With [uv](https://docs.astral.sh/uv/) — no install step at all:**
 
 ```bash
-uvx openmeteo-mcp
+uvx myai-weather-mcp
 # or straight from GitHub:
 uvx --from git+https://github.com/myAI-2025/weather-mcp openmeteo-mcp
 ```
@@ -145,7 +148,7 @@ Using `uvx` instead, so nothing needs installing first:
   "mcpServers": {
     "weather": {
       "command": "uvx",
-      "args": ["openmeteo-mcp"]
+      "args": ["myai-weather-mcp"]
     }
   }
 }
