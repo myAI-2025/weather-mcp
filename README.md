@@ -243,6 +243,19 @@ and writes responses to stdout:
 Upstream calls: Open-Meteo geocoding (`geocoding-api.open-meteo.com`) then the
 forecast endpoint (`api.open-meteo.com`) with `current=temperature_2m,wind_speed_10m,weather_code`.
 
+## Acknowledgments
+
+Created and maintained by **Mona ([myAI-2025](https://github.com/myAI-2025))**,
+who directed the project and tested it in Claude Code.
+
+Developed with AI assistance from **Claude and Claude Code (Anthropic)** and
+**ChatGPT and Codex (OpenAI)** across planning, implementation, debugging,
+testing, documentation, packaging, and publication.
+
+Weather data is provided by [Open-Meteo](https://open-meteo.com).
+These acknowledgments credit the tools and services used; they do not imply
+sponsorship or endorsement by their providers.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
