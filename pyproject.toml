@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "myai-weather-mcp"
-version = "0.1.1"
+version = "0.1.2"
 description = "Minimal dependency-free Model Context Protocol server exposing get_weather and get_hourly_forecast tools, backed by the free Open-Meteo API"
 readme = "README.md"
 license = { text = "MIT" }

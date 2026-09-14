@@ -3,7 +3,7 @@
 [![Python application](https://github.com/myAI-2025/weather-mcp/actions/workflows/python-app.yml/badge.svg)](https://github.com/myAI-2025/weather-mcp/actions/workflows/python-app.yml)
 [![PyPI](https://img.shields.io/pypi/v/myai-weather-mcp)](https://pypi.org/project/myai-weather-mcp/)
 
-<!-- mcp-name: io.github.myai-2025/openmeteo-mcp -->
+<!-- mcp-name: io.github.myAI-2025/openmeteo-mcp -->
 
 A minimal [Model Context Protocol](https://modelcontextprotocol.io) server in a
 single file. It speaks JSON-RPC 2.0 over stdio and exposes two tools,
@@ -79,7 +79,7 @@ command (or an equivalent) that clients can launch.
 The distribution is named `myai-weather-mcp`; both `myai-weather-mcp` and
 `openmeteo-mcp` launch the server.
 
-**From PyPI (after the first successful release):**
+**From PyPI:**
 
 ```bash
 pipx install myai-weather-mcp      # or: pip install myai-weather-mcp
