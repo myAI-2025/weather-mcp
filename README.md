@@ -14,28 +14,60 @@ No third-party runtime dependencies — standard library only. Requires Python 3
 
 ## Quick start: Claude Code
 
-You need [Claude Code](https://code.claude.com/docs/en/overview) installed and signed in,
-[uv](https://docs.astral.sh/uv/getting-started/installation/) installed (which provides
-`uvx`), and an internet connection. No weather API key is needed.
+### 1. Prepare your terminal
 
-Register the published release with one command:
+Open **Terminal** on macOS/Linux or **PowerShell** on Windows. Paste the command
+blocks in this guide there. Weather questions and commands beginning with `/`,
+such as `/login` and `/mcp`, belong inside a Claude Code conversation.
+If Claude Code is already open in your terminal, use a new terminal tab for setup.
+
+1. Install Claude Code using its [official setup guide](https://code.claude.com/docs/en/setup).
+   Run `claude --version` in your terminal to check that it is available.
+   Then run `claude` and follow the sign-in prompts; if needed, type `/login`
+   inside Claude Code. Keep a separate terminal tab open for the next steps.
+2. Install uv using the [instructions for your operating system](https://docs.astral.sh/uv/getting-started/installation/).
+   uv supplies `uvx`, which downloads and runs the weather package for you.
+   Reopen your terminal after installation and run `uvx --version`.
+   If either version check says “command not found,” finish that installation
+   before continuing.
+
+You need an internet connection to download the package and fetch weather.
+No weather API key is needed.
+
+### 2. Add the weather server
+
+Run this in your terminal:
 
 ```bash
 claude mcp add --scope user weather -- uvx myai-weather-mcp==0.1.2
 ```
 
-This lets Claude Code download and start the package automatically. No repository
-clone or separate package installation is needed. If you already have a server
-named `weather`, inspect it with `claude mcp get weather` before changing it.
+`weather` is the name you will see in Claude Code. `myai-weather-mcp` is the
+published package it runs. User scope makes this setup available across your
+Claude Code projects. No repository clone or separate package installation is needed.
+See the [Claude Code MCP reference](https://code.claude.com/docs/en/mcp) for other setup options.
 
-Check the connection:
+The `==0.1.2` pin selects the release used in this guide, so a later release does
+not silently change your setup. It is intentional; see [Updating your version](#updating-your-version)
+when you want to upgrade.
+
+If `weather` already exists, inspect it with `claude mcp get weather`.
+If it already uses the command above, continue to the next step. To replace an
+older user-scope setup, follow the replacement steps under [Updating your version](#updating-your-version).
+
+### 3. Check the connection and ask for weather
+
+Run in your terminal:
 
 ```bash
 claude mcp get weather
 ```
 
-Look for `Connected`. Start a new Claude Code session (or reconnect `weather`
-through `/mcp` in an existing session), then ask:
+Look for `Connected`. If you see a different status or no server is found, use
+[Connection troubleshooting](#connection-troubleshooting) below.
+
+Start a new Claude Code session by running `claude`, or type `/mcp` inside an
+existing session and reconnect `weather`. At Claude Code's conversation prompt, paste:
 
 - “Use the weather tool to tell me the current weather in Tokyo.”
 - “Use the hourly forecast tool to show the next six hours in Tokyo.”
@@ -43,16 +75,61 @@ through `/mcp` in an existing session), then ask:
 Expect current conditions, temperature in °F, wind in mph, and six forecast rows
 with local times and rain probabilities. Values change with the weather.
 
-### If something looks stuck
+### Updating your version
 
-- **A blank terminal after `uvx myai-weather-mcp`:** the server is waiting for an
+Check the [release notes](https://github.com/myAI-2025/weather-mcp/releases) and
+choose a published version. To replace the user-scope registration, first inspect
+`claude mcp get weather` and save any custom settings you want to keep. Then run
+the following commands, **replacing `0.1.2` with your chosen version** in the add command:
+
+```bash
+claude mcp remove --scope user weather
+claude mcp add --scope user weather -- uvx myai-weather-mcp==0.1.2
+claude mcp get weather
+```
+
+Removing the registration removes that client configuration, not your repository
+or source files. If your existing registration is in local or project scope,
+inspect that configuration before changing it; a same-name entry there may override
+the user-scope entry.
+
+Reconnect through `/mcp` or start a new Claude Code session after replacing it.
+For Claude Desktop, change the version in its configuration's `args` and restart.
+
+Refreshing uv's cache does **not** change a saved version pin. If a version that
+is already published cannot be found, run the following with the version you selected:
+
+```bash
+uvx --refresh myai-weather-mcp==0.1.2
+```
+
+If the terminal stays blank without an error, the server is waiting for a client;
+press Control+C, then reconnect your client. See [uv's tool guide](https://docs.astral.sh/uv/guides/tools/)
+for more about running tools and selecting versions.
+
+### Connection troubleshooting
+
+- **No server named `weather`:** run the add command in step 2, then check again.
+- **Failed to connect or another non-connected status:** inspect the command and
+  arguments printed by `claude mcp get weather`. Try
+  `uvx myai-weather-mcp==0.1.2` directly in your terminal and read any error.
+  If it starts without an error and waits, press Control+C and reconnect through
+  `/mcp`. A successful start checks that the package can launch; ask for weather
+  to check the network too.
+- **`uvx` not found:** install uv and reopen your terminal. If the terminal finds
+  it but your client does not, find its full path with `command -v uvx`
+  (macOS/Linux) or `where.exe uvx` (Windows PowerShell). Use that path in place of
+  `uvx` in the registration or configuration; quote paths containing spaces.
+- **Package download fails:** check your internet connection and the exact package
+  name and version. If the selected release exists but uv cannot find it, use the
+  cache-refresh command above. A network or proxy error needs that connection fixed.
+- **Connected, but tools are missing:** start a new Claude Code session or use
+  `/mcp` to check whether `weather` is enabled and reconnect it.
+- **A blank terminal after starting the server directly:** it is waiting for an
   MCP client. This is expected; press Control+C and use the client setup above.
-- **`uvx` not found:** install uv, reopen your terminal, and retry. For a desktop
-  client that cannot find it, use the full path reported by `command -v uvx`
-  (macOS/Linux) or `where uvx` (Windows) as the command in its configuration.
-- **New release not found:** run `uvx --refresh myai-weather-mcp==0.1.2` to refresh
-  the package cache, then press Control+C and reconnect the client.
 - **Claude Code says “Not logged in”:** open `claude` and run `/login`.
+- **Connected, but weather requests fail:** check the returned error and your
+  internet connection. The server must reach Open-Meteo to retrieve weather.
 - **Location not found:** try a well-known city name. An unknown place should
   return a readable error rather than a forecast.
 
@@ -89,7 +166,12 @@ language — the model picks the tool and fills in the arguments:
 
 ### Try it without a client
 
-Drive the server directly over stdio with a hand-written JSON-RPC exchange:
+With uv installed, paste this whole block into a **macOS/Linux terminal using
+bash or zsh**. It downloads the pinned package if needed and works from any
+folder; no clone or separate package installation is required. This shell example
+is not PowerShell syntax.
+
+It sends a small JSON-RPC exchange directly to the server:
 
 ```bash
 printf '%s\n' \
@@ -97,7 +179,7 @@ printf '%s\n' \
   '{"jsonrpc":"2.0","method":"notifications/initialized"}' \
   '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"get_weather","arguments":{"location":"Seattle"}}}' \
   '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"get_hourly_forecast","arguments":{"location":"Tokyo","hours":6}}}' \
-  | openmeteo-mcp        # or: python3 weather_mcp/server.py
+  | uvx myai-weather-mcp==0.1.2
 ```
 
 The `tools/call` responses look like:
@@ -126,94 +208,107 @@ An unknown place name comes back as a normal result with `"isError": true`:
 
 ## Install
 
-Pick whichever fits your setup. All of them give you an `openmeteo-mcp`
-command (or an equivalent) that clients can launch.
+The quick start already runs the published package through uvx. The options below
+are alternatives; you do not need to complete all of them.
 
-The distribution is named `myai-weather-mcp`; both `myai-weather-mcp` and
-`openmeteo-mcp` launch the server.
+Use `myai-weather-mcp` as the package and launch command throughout this guide.
+`openmeteo-mcp` is an older compatibility alias for the same server.
 
-**From PyPI:**
-
-```bash
-pipx install myai-weather-mcp      # or: pip install myai-weather-mcp
-```
-
-**With [uv](https://docs.astral.sh/uv/) — no install step at all:**
+**Run the published release with uv (recommended):**
 
 ```bash
-uvx myai-weather-mcp
-# or straight from GitHub:
-uvx --from git+https://github.com/myAI-2025/weather-mcp openmeteo-mcp
+uvx myai-weather-mcp==0.1.2
 ```
 
-**With pipx or pip:**
+**Install a persistent command with [pipx](https://pipx.pypa.io/stable/installation/):**
 
 ```bash
-pipx install git+https://github.com/myAI-2025/weather-mcp
-# or
-pip install git+https://github.com/myAI-2025/weather-mcp
+pipx install myai-weather-mcp==0.1.2
+myai-weather-mcp
 ```
 
-**From a clone (no install):**
+Alternatively, install with `python3 -m pip install myai-weather-mcp==0.1.2`
+inside an activated Python virtual environment.
+
+**Run the source from GitHub with uv:**
+
+```bash
+uvx --from git+https://github.com/myAI-2025/weather-mcp myai-weather-mcp
+```
+
+This uses the repository's default branch, which may differ from the published release.
+
+**Run a local clone (requires Git and Python 3.8+):**
 
 ```bash
 git clone https://github.com/myAI-2025/weather-mcp
-python3 weather-mcp/weather_mcp/server.py     # runs the server directly
+python3 weather-mcp/weather_mcp/server.py
 ```
+
+Run the second command from the same folder where you ran `git clone`, or use
+the script's full path. On Windows, use your Python launcher if it is named `python`
+instead of `python3`.
+
+All of these launch the server and wait for MCP input. A blank terminal is normal;
+press Control+C to stop it before configuring a client.
 
 ## Configure a client
 
 ### Claude Code
 
+Use the [quick start](#quick-start-claude-code) for the recommended uvx setup.
+If you already registered `weather` there, no second registration is needed.
+
+If you chose the persistent pipx installation instead, the alternative is:
+
 ```bash
-claude mcp add --scope user weather -- openmeteo-mcp
+claude mcp add --scope user weather -- myai-weather-mcp
 ```
 
-If you cloned instead of installing, point at the file:
+For a local clone, replace the example path below with the script's actual full path:
 
 ```bash
 claude mcp add --scope user weather -- python3 /path/to/weather-mcp/weather_mcp/server.py
 ```
 
-Restart Claude Code (or reconnect via `/mcp`). Both tools then appear as
-`mcp__weather__get_weather` and `mcp__weather__get_hourly_forecast`.
+When replacing an existing registration, inspect it first and follow
+[Updating your version](#updating-your-version). Restart Claude Code or reconnect
+via `/mcp`, then ask it to use `get_weather` or `get_hourly_forecast`.
 
 ### Claude Desktop
 
-Edit `claude_desktop_config.json`
-(macOS: `~/Library/Application Support/Claude/`, Windows: `%APPDATA%\Claude\`)
-and add:
-
-```json
-{
-  "mcpServers": {
-    "weather": {
-      "command": "openmeteo-mcp"
-    }
-  }
-}
-```
-
-Using `uvx` instead, so nothing needs installing first:
+Install uv first, as described in the quick start. Edit `claude_desktop_config.json`
+(macOS: `~/Library/Application Support/Claude/`, Windows: `%APPDATA%\Claude\`).
+Add the `weather` entry under `mcpServers`, preserving any other servers already there:
 
 ```json
 {
   "mcpServers": {
     "weather": {
       "command": "uvx",
-      "args": ["myai-weather-mcp"]
+      "args": ["myai-weather-mcp==0.1.2"]
     }
   }
 }
 ```
 
-Restart Claude Desktop. The tools appear under the connectors (plug) menu.
+If Desktop cannot find uvx, replace `"uvx"` with its full path from `command -v uvx`
+(macOS) or `where.exe uvx` (Windows). In JSON, Windows backslashes must be doubled,
+for example `"C:\\Users\\YourName\\.local\\bin\\uvx.exe"`; use your actual path.
+
+If you installed the package with pipx instead, use `"command": "myai-weather-mcp"`
+(or its full path) and omit `args`.
+
+Quit and reopen Claude Desktop, then ask it to use the weather tools.
+The Desktop configuration is an alternative setup; the end-to-end client checks
+for this guide were performed in Claude Code.
 
 ### Any other MCP client
 
-It's a standard stdio server: launch `openmeteo-mcp` (or
-`python3 -m weather_mcp`) as a subprocess and speak JSON-RPC 2.0 over its
-stdin/stdout. See **How it works** below.
+Configure a stdio server with command `uvx` and argument
+`myai-weather-mcp==0.1.2`. With a persistent installation, the command can instead
+be `myai-weather-mcp`. The client launches the process and exchanges JSON-RPC 2.0
+over its stdin/stdout. See **How it works** below.
 
 ## Development
 
