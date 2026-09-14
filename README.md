@@ -10,7 +10,58 @@ single file. It speaks JSON-RPC 2.0 over stdio and exposes two tools,
 `get_weather` and `get_hourly_forecast`, backed by the free
 [Open-Meteo](https://open-meteo.com) API.
 
-No third-party dependencies — standard library only. Requires Python 3.7+.
+No third-party runtime dependencies — standard library only. Requires Python 3.8+.
+
+## Quick start: Claude Code
+
+You need [Claude Code](https://code.claude.com/docs/en/overview) installed and signed in,
+[uv](https://docs.astral.sh/uv/getting-started/installation/) installed (which provides
+`uvx`), and an internet connection. No weather API key is needed.
+
+Register the published release with one command:
+
+```bash
+claude mcp add --scope user weather -- uvx myai-weather-mcp==0.1.2
+```
+
+This lets Claude Code download and start the package automatically. No repository
+clone or separate package installation is needed. If you already have a server
+named `weather`, inspect it with `claude mcp get weather` before changing it.
+
+Check the connection:
+
+```bash
+claude mcp get weather
+```
+
+Look for `Connected`. Start a new Claude Code session (or reconnect `weather`
+through `/mcp` in an existing session), then ask:
+
+- “Use the weather tool to tell me the current weather in Tokyo.”
+- “Use the hourly forecast tool to show the next six hours in Tokyo.”
+
+Expect current conditions, temperature in °F, wind in mph, and six forecast rows
+with local times and rain probabilities. Values change with the weather.
+
+### If something looks stuck
+
+- **A blank terminal after `uvx myai-weather-mcp`:** the server is waiting for an
+  MCP client. This is expected; press Control+C and use the client setup above.
+- **`uvx` not found:** install uv, reopen your terminal, and retry. For a desktop
+  client that cannot find it, use the full path reported by `command -v uvx`
+  (macOS/Linux) or `where uvx` (Windows) as the command in its configuration.
+- **New release not found:** run `uvx --refresh myai-weather-mcp==0.1.2` to refresh
+  the package cache, then press Control+C and reconnect the client.
+- **Claude Code says “Not logged in”:** open `claude` and run `/login`.
+- **Location not found:** try a well-known city name. An unknown place should
+  return a readable error rather than a forecast.
+
+### Help us test
+
+Try the two questions above and a made-up location such as `ZzzxqqNowhere`.
+If anything is confusing, [open an issue](https://github.com/myAI-2025/weather-mcp/issues/new)
+with your operating system, client, package version, steps, and the error message.
+Remove passwords, authentication codes, and other private information before sharing.
 
 ## The tools
 
@@ -21,7 +72,9 @@ No third-party dependencies — standard library only. Requires Python 3.7+.
 
 ## Usage
 
-Once the server is wired into a client (see below), just ask in natural
+The responses below are illustrative snapshots, not current weather.
+
+Once the server is wired into a client, just ask in natural
 language — the model picks the tool and fills in the arguments:
 
 > **You:** What's the weather in Seattle right now?
