@@ -122,7 +122,8 @@ for more about running tools and selecting versions.
   `uvx` in the registration or configuration; quote paths containing spaces.
 - **Package download fails:** check your internet connection and the exact package
   name and version. If the selected release exists but uv cannot find it, use the
-  cache-refresh command above. A network or proxy error needs that connection fixed.
+  cache-refresh command above. For `UnknownIssuer`, see the
+  [certificate-error steps](#pypi-certificate-error-unknownissuer) below.
 - **Connected, but tools are missing:** start a new Claude Code session or use
   `/mcp` to check whether `weather` is enabled and reconnect it.
 - **A blank terminal after starting the server directly:** it is waiting for an
@@ -132,6 +133,40 @@ for more about running tools and selecting versions.
   internet connection. The server must reach Open-Meteo to retrieve weather.
 - **Location not found:** try a well-known city name. An unknown place should
   return a readable error rather than a forecast.
+
+### PyPI certificate error (`UnknownIssuer`)
+
+If the terminal shows `invalid peer certificate: UnknownIssuer` while uvx fetches
+from `pypi.org`, the package launcher cannot verify that HTTPS connection. This
+happens before the weather server starts and may appear in your client as
+`Connection closed` during initialization. Other connection errors can have
+different causes.
+
+Try using the certificates already trusted by your operating system:
+
+```bash
+uvx --system-certs myai-weather-mcp==0.1.2
+```
+
+This can help on a managed network whose certificate is in the system trust store.
+It keeps certificate verification enabled. If the server starts and waits without
+an error, press Control+C. To use the same option in Claude Code, follow the
+[registration replacement steps](#updating-your-version), using this add command:
+
+```bash
+claude mcp add --scope user weather -- uvx --system-certs myai-weather-mcp==0.1.2
+```
+
+For Claude Desktop's uvx setup, change `args` to
+`["--system-certs", "myai-weather-mcp==0.1.2"]`. Reconnect or restart your client,
+then ask for weather to check the full connection. Use your selected package
+version if it differs from this guide's pin.
+
+If uvx does not recognize the flag, update uv using its installation method.
+If certificate verification still fails, consult your network administrator and
+[uv's certificate documentation](https://docs.astral.sh/uv/concepts/authentication/certificates/).
+Keep verification enabled; do not use `--allow-insecure-host` to bypass the error.
+If your existing setup works, no configuration change is needed.
 
 ### Help us test
 
