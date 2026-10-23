@@ -16,6 +16,20 @@ No third-party runtime dependencies — standard library only. Requires Python 3
 
 ### 1. Prepare your terminal
 
+**Where do I paste each instruction?**
+
+You will use two places:
+
+- **A regular Terminal tab** is for setup commands. On a Mac, open the Terminal
+  app and press **Command + T** to open a new tab. Paste one command, then press
+  **Return**.
+- **The Claude Code conversation** is where you ask questions, such as
+  “What is the weather in Tokyo?”
+
+If Claude is already chatting with you, open a new Terminal tab for the setup
+commands. Keep your Claude conversation in its original tab so you can return
+to it afterward.
+
 Open **Terminal** on macOS/Linux or **PowerShell** on Windows. Paste the command
 blocks in this guide there. Weather questions and commands beginning with `/`,
 such as `/login` and `/mcp`, belong inside a Claude Code conversation.
